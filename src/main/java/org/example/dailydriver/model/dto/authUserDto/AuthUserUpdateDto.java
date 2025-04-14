@@ -1,16 +1,15 @@
 package org.example.dailydriver.model.dto.authUserDto;
 
 import lombok.*;
+import org.example.dailydriver.model.dto.AuthUserBaseDto;
 import org.example.dailydriver.model.entity.Address;
-import org.example.dailydriver.model.enums.Role;
-import org.example.dailydriver.model.enums.Status;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthUserUpdateDto {
+public class AuthUserUpdateDto implements AuthUserBaseDto {
 
     private String id;
     private String username;

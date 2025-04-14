@@ -2,14 +2,14 @@ package org.example.dailydriver.model.dto.carDto;
 
 import lombok.*;
 import org.example.dailydriver.model.entity.CarLocation;
-import org.example.dailydriver.model.entity.Comment;
 import org.example.dailydriver.model.enums.CarColor;
 import org.example.dailydriver.model.enums.Category;
 import org.example.dailydriver.model.enums.FuelType;
 import org.example.dailydriver.model.enums.Steering;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,15 +22,11 @@ public class CarCreateDto {
     private Integer capacity;
     private Double price;
     private String description;
-    private LocalDateTime productionYear;
-    private Integer rating;
-    private Boolean active = Boolean.TRUE;
-    private Boolean isAvailable = Boolean.FALSE;
-    private Set<Comment> comments;
+    private LocalDate productionYear;
     private CarLocation location;
     private Category category;
     private Steering steering;
     private CarColor color;
     private FuelType fuelType;
-
+    private List<MultipartFile> files;
 }

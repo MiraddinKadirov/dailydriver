@@ -6,7 +6,7 @@ import org.example.dailydriver.model.dto.authUserDto.AuthUserUpdateDto;
 import org.example.dailydriver.model.entity.AuthUser;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AuthUserMapper {
 
     AuthUser toEntity(AuthUserDto authUserDto);

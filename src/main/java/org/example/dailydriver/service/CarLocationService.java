@@ -16,7 +16,7 @@ public class CarLocationService implements CrudService<CarLocation, CarLocation,
     }
 
     @Override
-    public Boolean save(CarLocation entity) {
+    public CarLocation save(CarLocation entity) {
         return null;
     }
 

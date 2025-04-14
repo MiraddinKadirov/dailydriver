@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.dailydriver.model.entity.baseEntity.BaseEntity;
+import org.example.dailydriver.model.entity.baseEntity.Identity;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -16,9 +18,11 @@ import org.example.dailydriver.model.entity.baseEntity.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "comment")
-public class Comment extends BaseEntity {
+public class Comment extends Identity {
 
     private String content;
+
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

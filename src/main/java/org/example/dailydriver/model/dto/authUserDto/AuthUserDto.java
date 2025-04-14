@@ -1,9 +1,5 @@
 package org.example.dailydriver.model.dto.authUserDto;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.example.dailydriver.model.entity.Address;
 import org.example.dailydriver.model.enums.Role;

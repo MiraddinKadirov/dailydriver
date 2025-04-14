@@ -17,7 +17,7 @@ public class AddressService implements CrudService<Address, Address, Address, St
     }
 
     @Override
-    public Boolean save(Address entity) {
+    public Address save(Address entity) {
         return null;
     }
 
