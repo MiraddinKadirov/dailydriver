@@ -26,7 +26,8 @@ public class AuthUser extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.REGISTERED;
 
-    @OneToOne(mappedBy = "authUser", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
 }

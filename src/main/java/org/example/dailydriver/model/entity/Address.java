@@ -22,8 +22,4 @@ public class Address extends BaseEntity {
     private String street;
     private String houseNumber;
 
-    @OneToOne
-    @JoinColumn(name = "users_id")
-    private AuthUser authUser;
-
 }

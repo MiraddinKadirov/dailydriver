@@ -1,6 +1,10 @@
 package org.example.dailydriver.service;
 
+import lombok.RequiredArgsConstructor;
+import org.example.dailydriver.mapper.CommentMapper;
 import org.example.dailydriver.model.dto.commentDto.CommentCreateDto;
+import org.example.dailydriver.model.dto.commentDto.CommentDto;
+import org.example.dailydriver.model.dto.commentDto.CommentUpdateDto;
 import org.example.dailydriver.model.entity.AuthUser;
 import org.example.dailydriver.model.entity.Car;
 import org.example.dailydriver.model.entity.Comment;
@@ -9,50 +13,41 @@ import org.example.dailydriver.repository.CarRepository;
 import org.example.dailydriver.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class CommentService implements CrudService<CommentCreateDto, Comment, Comment, String> {
+@RequiredArgsConstructor
+public class CommentService implements CrudService<CommentCreateDto, CommentUpdateDto, CommentDto, String> {
 
     private final CommentRepository commentRepository;
     private final AuthUserRepository authUserRepository;
     private final CarRepository carRepository;
+    private final CommentMapper commentMapper;
 
-    public CommentService(CommentRepository commentRepository, AuthUserRepository authUserRepository, CarRepository carRepository) {
-        this.commentRepository = commentRepository;
-        this.authUserRepository = authUserRepository;
-        this.carRepository = carRepository;
-    }
 
     @Override
-    public Comment save(CommentCreateDto dto) {
-
+    public CommentDto save(CommentCreateDto dto) {
         AuthUser user = authUserRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         Car car = carRepository.findById(dto.getCarId())
                 .orElseThrow(() -> new RuntimeException("Car not found"));
-
-        Comment comment = new Comment();
-        comment.setContent(dto.getContent());
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setUser(user);
-        comment.setCar(car);
-
-        return commentRepository.save(comment);
-
+        Comment entity = commentMapper.toEntity(dto);
+        entity.setCar(car);
+        entity.setUser(user);
+        List<Comment> comments = new ArrayList<>();
+        comments.add(entity);
+        car.setComments(comments);
+        carRepository.save(car);
+        return commentMapper.toDto(commentRepository.save(entity));
     }
 
     @Override
-    public Comment update(Comment entity, String commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
-
-        comment.setContent(entity.getContent());
-        comment.setCreatedAt(LocalDateTime.now());
-
-        return commentRepository.save(comment);
+    public CommentDto update(CommentUpdateDto entity, String id) {
+        Comment comment = commentRepository.findByCarId(id);
+        commentMapper.updateComment(entity, comment);
+        commentRepository.save(comment);
+        return commentMapper.toDto(comment);
     }
 
     @Override
@@ -62,26 +57,30 @@ public class CommentService implements CrudService<CommentCreateDto, Comment, Co
     }
 
     @Override
-    public Comment findById(String id) {
-        return commentRepository.findById(id).orElse(null);
+    public CommentDto findById(String id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("Comment not found"));
+        return commentMapper.toDto(comment);
     }
 
     @Override
-    public List<Comment> findAll() {
+    public List<CommentDto> findAll() {
         return List.of();
     }
 
     @Override
-    public List<Comment> findAll(String carID) {
-        return commentRepository.findAllByCarIdNative(carID);
-    }
+    public List<CommentDto> findAll(String id) {
+        List<Comment> comments = commentRepository.findAllByCarId(id);
+        List<CommentDto> dtoList = commentMapper.toDto(comments);
 
-    public Comment save(String carID, String userID, Comment entity) {
-        AuthUser authUser = authUserRepository.findById(userID).orElse(null);
-        Car car = carRepository.findById(carID).orElse(null);
-        entity.setCar(car);
-        entity.setUser(authUser);
-        return commentRepository.save(entity);
+        for (int i = 0; i < comments.size(); i++) {
+            Comment comment = comments.get(i);
+            CommentDto dto = dtoList.get(i);
+            AuthUser user = comment.getUser();
+            dto.setUsername(user.getUsername());
+
+        }
+
+        return dtoList;
     }
 
 }

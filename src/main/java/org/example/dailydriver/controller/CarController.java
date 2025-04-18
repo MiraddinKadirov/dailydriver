@@ -1,56 +1,68 @@
 package org.example.dailydriver.controller;
 
-import org.example.dailydriver.model.dto.carDto.CarCreateDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.dailydriver.model.dto.carDto.CarDto;
-import org.example.dailydriver.model.dto.carDto.CarUpdateDto;
+import org.example.dailydriver.model.enums.Category;
 import org.example.dailydriver.service.CarService;
-import org.example.dailydriver.service.FileService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 
+@Tag(name = "Car Controller", description = "Mashinalar bilan ishlovchi endpointlar")
 @RestController
 @RequestMapping("/car")
 public class CarController {
 
     private final CarService carService;
-    private final FileService fileService;
 
-    public CarController(CarService carService, FileService fileService) {
+    public CarController(CarService carService) {
         this.carService = carService;
-        this.fileService = fileService;
     }
 
+    @Operation(
+            summary = "Eng mashhur mashinalarni olish",
+            description = "Reytingi yuqori va komentlari ko‘p bo‘lgan mashinalarni tartiblangan ro‘yxatda qaytaradi"
+    )
+    @GetMapping("/popular")
+    public ResponseEntity<List<CarDto>> getPopularCars() {
+        return ResponseEntity.ok(carService.findAll());
+    }
+
+
+    @Operation(
+            summary = "Reyting bo‘yicha mashinalarni olish",
+            description = "Foydalanuvchi 1 dan 5 gacha rating yuboradi, shunga mos mashinalar ro‘yxati qaytariladi"
+    )
+    @GetMapping("/rating")
+    public ResponseEntity<List<CarDto>> getCarsByRating(
+            @Parameter(description = "Rating qiymati (1 dan 5 gacha)")
+            @RequestParam Double rating) {
+        return ResponseEntity.ok(carService.getCarsByRating(rating));
+    }
+
+
+    @Operation(summary = "Bitta mashinani olish", description = "Mashinaning ID si orqali topib beradi")
     @GetMapping("/{id}")
     public ResponseEntity<CarDto> getCar(@PathVariable String id) {
         return ResponseEntity.ok(carService.findById(id));
     }
 
+    @Operation(summary = "Mashinalarni paginate qilib olish", description = "Mashinalarni sahifalab (page, size) bo‘yicha olib beradi")
     @GetMapping
-    public ResponseEntity<List<CarDto>> findAll() {
-        return ResponseEntity.status(200).body(carService.findAll());
+    public ResponseEntity<Page<CarDto>> getPagedCars(
+            @Parameter(description = "Sahifa raqami (0 dan boshlanadi)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Sahifadagi elementlar soni") @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(carService.findAllPaged(page, size));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<CarDto> createCar(@RequestBody CarCreateDto car) {
-        CarDto save = carService.save(car);
-        return ResponseEntity.status(200).body(save);
+    @Operation(summary = "Kategoriya bo‘yicha mashinalar", description = "Berilgan kategoriya bo‘yicha mashinalarni qaytaradi")
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<CarDto>> getCarsByCategory(@PathVariable Category category) {
+        return ResponseEntity.ok(carService.getCarsByCategory(category));
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteCar(@PathVariable String id) {
-        return ResponseEntity.ok(carService.delete(id));
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<CarDto> updateCar(@RequestBody CarUpdateDto car,
-                                            @PathVariable String id) {
-        return ResponseEntity.ok(carService.update(car, id));
-    }
-
-
 
 }

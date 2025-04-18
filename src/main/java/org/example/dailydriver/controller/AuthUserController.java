@@ -1,13 +1,13 @@
 package org.example.dailydriver.controller;
 
+import org.example.dailydriver.model.AuthRequest;
+import org.example.dailydriver.model.AuthResponse;
 import org.example.dailydriver.model.dto.authUserDto.AuthUserCreateDto;
 import org.example.dailydriver.model.dto.authUserDto.AuthUserDto;
 import org.example.dailydriver.model.dto.authUserDto.AuthUserUpdateDto;
 import org.example.dailydriver.service.AuthUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -19,14 +19,15 @@ public class AuthUserController {
         this.userService = userService;
     }
 
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request){
+        return ResponseEntity.ok(userService.login(request));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AuthUserDto> getUser(@PathVariable("id") String id) {
         return ResponseEntity.status(200).body(userService.findById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<AuthUserDto>> getUsers() {
-        return ResponseEntity.status(200).body(userService.findAll());
     }
 
     @PostMapping

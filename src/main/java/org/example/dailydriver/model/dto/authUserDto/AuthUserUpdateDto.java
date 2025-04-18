@@ -2,7 +2,7 @@ package org.example.dailydriver.model.dto.authUserDto;
 
 import lombok.*;
 import org.example.dailydriver.model.dto.AuthUserBaseDto;
-import org.example.dailydriver.model.entity.Address;
+import org.example.dailydriver.model.dto.addressDto.AddressDto;
 
 @Getter
 @Setter
@@ -16,6 +16,6 @@ public class AuthUserUpdateDto implements AuthUserBaseDto {
     private String password;
     private String fullName;
     private String phoneNumber;
-    private Address address;
+    private AddressDto address;
 
 }

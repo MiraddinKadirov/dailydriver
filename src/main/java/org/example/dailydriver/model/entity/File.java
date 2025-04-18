@@ -24,5 +24,4 @@ public class File extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id")
     private Car car;
-
 }

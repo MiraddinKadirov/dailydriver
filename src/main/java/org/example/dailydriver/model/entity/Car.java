@@ -12,8 +12,8 @@ import org.example.dailydriver.model.enums.FuelType;
 import org.example.dailydriver.model.enums.Steering;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -28,19 +28,21 @@ public class Car extends BaseEntity {
     private Double price;
     private String description;
     private LocalDate productionYear;
-    private Integer rating;
+    private Double rating;
     private Boolean active = Boolean.TRUE;
     private Boolean isAvailable = Boolean.FALSE;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<File> files;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    private Set<Comment> comments;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CarRating> ratings;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private CarLocation location;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CarLocation> locations = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Category category;

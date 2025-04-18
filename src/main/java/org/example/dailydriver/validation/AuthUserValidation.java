@@ -15,7 +15,6 @@ public class AuthUserValidation {
         this.authUserRepository = authUserRepository;
     }
 
-
     public void validate(AuthUserBaseDto authUser) {
         if (!isUsernameUnique(authUser.getUsername())) {
             throw new ValidateException("Username already exists");
@@ -35,6 +34,9 @@ public class AuthUserValidation {
     }
 
     private boolean isPhoneNumberUnique(String phoneNumber) {
+        if (!phoneNumber.startsWith("+998")) {
+            return false;
+        }
         return !authUserRepository.existsByPhoneNumber(phoneNumber);
     }
 

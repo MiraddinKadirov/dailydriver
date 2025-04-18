@@ -1,21 +1,20 @@
 package org.example.dailydriver.model.dto.carDto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import org.example.dailydriver.model.entity.CarLocation;
 import org.example.dailydriver.model.enums.CarColor;
 import org.example.dailydriver.model.enums.Category;
 import org.example.dailydriver.model.enums.FuelType;
 import org.example.dailydriver.model.enums.Steering;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Schema(name = "CarCreateDto", description = "Ma'lumotlar JSON ko‘rinishida beriladi")
 public class CarCreateDto {
 
     private String name;
@@ -23,10 +22,8 @@ public class CarCreateDto {
     private Double price;
     private String description;
     private LocalDate productionYear;
-    private CarLocation location;
     private Category category;
     private Steering steering;
     private CarColor color;
     private FuelType fuelType;
-    private List<MultipartFile> files;
 }

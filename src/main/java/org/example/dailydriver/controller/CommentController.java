@@ -1,6 +1,8 @@
 package org.example.dailydriver.controller;
 
 import org.example.dailydriver.model.dto.commentDto.CommentCreateDto;
+import org.example.dailydriver.model.dto.commentDto.CommentDto;
+import org.example.dailydriver.model.dto.commentDto.CommentUpdateDto;
 import org.example.dailydriver.model.entity.Comment;
 import org.example.dailydriver.service.CommentService;
 import org.springframework.http.ResponseEntity;
@@ -20,24 +22,24 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Comment>> getComment(@PathVariable String id) {
-        return ResponseEntity.of(Optional.ofNullable(commentService.findAll(id)));
+    public ResponseEntity<CommentDto> getComment(@PathVariable String id) {
+        return ResponseEntity.of(Optional.ofNullable(commentService.findById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Comment> addComment(@RequestBody CommentCreateDto comment) {
+    public ResponseEntity<CommentDto> addComment(@RequestBody CommentCreateDto comment) {
         return ResponseEntity.ok(commentService.save(comment));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable String id,
-                                                 @RequestBody Comment comment) {
+    public ResponseEntity<CommentDto> updateComment(@PathVariable String id,
+                                                    @RequestBody CommentUpdateDto comment) {
         return ResponseEntity.ok(commentService.update(comment, id));
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteComment(@PathVariable String id) {
-         return ResponseEntity.ok(commentService.delete(id));
+        return ResponseEntity.ok(commentService.delete(id));
     }
 
 }

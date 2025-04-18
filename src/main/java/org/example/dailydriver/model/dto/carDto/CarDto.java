@@ -1,6 +1,8 @@
 package org.example.dailydriver.model.dto.carDto;
 
 import lombok.*;
+import org.example.dailydriver.model.dto.commentDto.CommentDto;
+import org.example.dailydriver.model.dto.fileDto.FileDto;
 import org.example.dailydriver.model.entity.CarLocation;
 import org.example.dailydriver.model.entity.Comment;
 import org.example.dailydriver.model.entity.File;
@@ -28,13 +30,13 @@ public class CarDto {
     private Integer rating;
     private Boolean active = Boolean.TRUE;
     private Boolean isAvailable = Boolean.FALSE;
-    private List<Comment> comments;
-    private CarLocation location;
+    private List<CommentDto> comments;
+    private List<CarLocation> location;
     private Category category;
     private Steering steering;
     private CarColor color;
     private FuelType fuelType;
-    private List<File> files;
+    private List<FileDto> files;
 
 
 }

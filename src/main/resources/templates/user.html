@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uz">
+<head>
+    <title>Chat - User</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>User Chat</h2>
+<div id="chat"></div>
+<label for="messageInput"></label><input type="text" id="messageInput" placeholder="Xabar yozing">
+<button onclick="sendMessage()">Yuborish</button>
+
+<script>
+    const socket = new SockJS("/ws");
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, options => {
+        stompClient.subscribe("/topic/messages", (msg) => {
+            const data = JSON.parse(msg.body);
+            const el = document.createElement("p");
+            el.textContent = data.sender + ": " + data.content + " (" + data.timestamp + ")";
+            document.getElementById("chat").appendChild(el);
+        });
+    });
+
+    function sendMessage() {
+        const msg = {
+            sender: "User",
+            recipient: "Admin",
+            content: document.getElementById("messageInput").value
+        };
+        stompClient.send("/app/chat.send", {}, JSON.stringify(msg));
+        document.getElementById("messageInput").value = "";
+    }
+
+    fetch("/chat/history")
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(msg => {
+                const el = document.createElement("p");
+                el.textContent = msg.sender + ": " + msg.content + " (" + msg.timestamp + ")";
+                document.getElementById("chat").appendChild(el);
+            });
+        });
+</script>
+</body>
+</html>

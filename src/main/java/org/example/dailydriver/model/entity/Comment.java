@@ -22,7 +22,7 @@ public class Comment extends Identity {
 
     private String content;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

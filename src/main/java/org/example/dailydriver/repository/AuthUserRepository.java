@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface AuthUserRepository extends JpaRepository<AuthUser, String> {
 
-    @Query("SELECT c FROM Car c WHERE c.id = :id AND c.deleted = false")
+    @Query("SELECT a FROM AuthUser a WHERE a.id = :id AND a.deleted = false")
     Optional<AuthUser> findByIdAndNotDeleted(@Param("id") String id);
 
     Optional<List<AuthUser>> findAllByDeletedFalse();
@@ -21,4 +21,6 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, String> {
 
     boolean existsByPhoneNumber(String phoneNumber);
 
+    @Query("SELECT a FROM AuthUser a WHERE a.username = :username ")
+    Optional<AuthUser> findByUsername(String username);
 }

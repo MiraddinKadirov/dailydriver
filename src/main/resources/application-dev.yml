@@ -3,22 +3,51 @@ spring:
     activate:
       on-profile: dev
 
+#  shell:
+#    interactive:
+#      enabled: true
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/dailydriver
+    url: jdbc:postgresql://localhost:5432/driver
     username: postgres
     password: ibraxim
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: none
+    show-sql: off
+
     properties:
       hibernate:
         format_sql: true
 
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+
+
+application:
+    jwt:
+      access-token-expire: 10000
+      refresh-token-expire: 100000000
+      secret: bu_secret_kalit_hech_kim_bilmasin_oka_78_hop
+
+
+
 logging:
   level:
     root: WARN
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql: WARN
+
+app:
+  sync-db: true
+
+
+

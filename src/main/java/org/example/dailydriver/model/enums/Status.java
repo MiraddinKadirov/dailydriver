@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Status {
 
     REGISTERED("Registered"),
-    NOT_REGISTERED("Not Registered"),
+    ANONYMOUS("Anonymous"),
     BLOCKED("Blocked");
 
     private final String status;

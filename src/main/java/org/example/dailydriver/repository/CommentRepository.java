@@ -12,10 +12,14 @@ import java.util.Map;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, String> {
 
-    @Query(value = """
-                SELECT * FROM comment WHERE car_id = :carId AND deleted = false ORDER BY created_at DESC
-            """, nativeQuery = true)
-    List<Comment> findAllByCarIdNative(@Param("carId") String carId);
+    @Query("SELECT c FROM Comment c WHERE c.id = :id")
+    Comment findByCarId(@Param("id") String id);
+
+    @Query(value = "SELECT * FROM Comment  WHERE car_id = :id", nativeQuery = true)
+    List<Comment> findAllByCarId(@Param("id") String id);
+
+
+
 
 
 }
