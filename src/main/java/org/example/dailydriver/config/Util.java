@@ -6,6 +6,7 @@ public class Util {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/user/login/**",
+            "/user/create/**",
             "/v1/auth/refreshToken",
             "/swagger-ui.html",
             "/swagger-ui/index.html"

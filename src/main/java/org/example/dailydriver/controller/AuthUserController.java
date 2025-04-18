@@ -30,7 +30,7 @@ public class AuthUserController {
         return ResponseEntity.status(200).body(userService.findById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AuthUserDto> createUser(@RequestBody AuthUserCreateDto userDto) {
         return ResponseEntity.status(201).body(userService.save(userDto));
     }

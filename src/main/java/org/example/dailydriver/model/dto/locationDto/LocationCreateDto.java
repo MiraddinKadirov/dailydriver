@@ -8,10 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Schema(name = "LocationCreateDto", description = "Mashina joylashuvi")
+@Schema(name = "LocationCreateDto", description = "Mashinaning yangi joylashuvini yuborish")
 public class LocationCreateDto {
 
     private Double latitude;
     private Double longitude;
-    private String carId;
+
 }

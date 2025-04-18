@@ -26,8 +26,8 @@ public class CarLocationService {
     }
 
 
-    public CarLocationDto save(LocationCreateDto entity) {
-        Car car = carRepository.findById(entity.getCarId()).orElseThrow(() -> new EntityNotFoundException("Car not found"));
+    public CarLocationDto save(LocationCreateDto entity, String carId) {
+        Car car = carRepository.findById(carId).orElseThrow(() -> new EntityNotFoundException("Car not found"));
 
         CarLocation carLocation = mapper.toEntity(entity);
         carLocation.setCar(car);

@@ -128,10 +128,6 @@ public class CarService implements CrudService<CarCreateDto, CarUpdateDto, CarDt
                 .collect(Collectors.toList());
     }
 
-    public Double getAverageRating() {
-        return carRepository.getAverageRating();
-    }
-
     public Map<String, Long> getCarCountByCategory() {
         List<Object[]> raw = carRepository.countByCategory();
         return raw.stream()

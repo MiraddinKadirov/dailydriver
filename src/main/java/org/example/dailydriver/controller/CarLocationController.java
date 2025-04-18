@@ -17,9 +17,10 @@ public class CarLocationController {
         this.carLocationService = carLocationService;
     }
 
-    @PostMapping
-    public ResponseEntity<CarLocationDto> addLocation(@RequestBody LocationCreateDto dto) {
-        return ResponseEntity.ok(carLocationService.save(dto));
+    @PostMapping("/{id}")
+    public ResponseEntity<CarLocationDto> addLocation(@RequestBody LocationCreateDto dto,
+                                                      @PathVariable String id) {
+        return ResponseEntity.ok(carLocationService.save(dto, id));
     }
 
     @GetMapping("/history/{carId}")

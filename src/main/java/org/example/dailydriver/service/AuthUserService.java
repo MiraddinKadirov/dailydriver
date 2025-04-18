@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -37,12 +38,14 @@ public class AuthUserService implements CrudService<AuthUserCreateDto
     private final AuthUserValidation validation;
     private final AuthUserMapper mapper;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthUserService(AuthUserRepository repository, AuthUserValidation validation, AuthUserMapper mapper, JwtService jwtService) {
+    public AuthUserService(AuthUserRepository repository, AuthUserValidation validation, AuthUserMapper mapper, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.validation = validation;
         this.mapper = mapper;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -50,6 +53,7 @@ public class AuthUserService implements CrudService<AuthUserCreateDto
     @Override
     public AuthUserDto save(AuthUserCreateDto entity) {
         validation.validate(entity);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         AuthUser entity1 = mapper.toEntity(entity);
         AuthUser save = repository.save(entity1);
         return mapper.toDto(save);

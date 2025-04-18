@@ -83,11 +83,4 @@ public class AdminCarController {
     public ResponseEntity<Map<Integer, Long>> getCarCountByProductionYear() {
         return ResponseEntity.ok(carService.getCarCountByProductionYear());
     }
-
-    @Operation(summary = "Mashinalarning o‘rtacha reytingi", description = "Barcha mashinalar uchun umumiy o‘rtacha reytingni hisoblab beradi")
-    @GetMapping("/average-rating")
-    public ResponseEntity<Double> getAverageRating() {
-        return ResponseEntity.ok(carService.getAverageRating());
-    }
-
 }
