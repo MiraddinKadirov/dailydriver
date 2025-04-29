@@ -17,4 +17,12 @@ public class CommentCreateDto {
     @NonNull
     private String carId;
 
+//    public CommentCreateDto validate(){
+//
+//        if (this.carId == null){
+//            throw new IllegalArgumentException("Car id is required");
+//        }
+//        return this;
+//    }
+
 }

@@ -9,6 +9,7 @@ import org.example.dailydriver.model.entity.AuthUser;
 import org.example.dailydriver.model.enums.Role;
 import org.example.dailydriver.repository.AuthUserRepository;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,9 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.PublicKey;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -58,34 +60,31 @@ public class JwtService {
     public UserDetails makeUserdetails(Claims claims, boolean syncDb) {
         String username;
         String password;
-        List<SimpleGrantedAuthority> authorities;
+        List<GrantedAuthority> authorities;
 
         if (syncDb) {
-            //  db
             Optional<AuthUser> authUser = authUserRepository.findByUsername(claims.getSubject());
             AuthUser byUsername = authUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            password = byUsername.getPassword();
+
             username = byUsername.getUsername();
-            authorities = getPermisions(byUsername.getRole());
+            password = byUsername.getPassword();
 
-        }else {
+            authorities = getPermissions(byUsername.getRole());
 
-            /// claim
-            String roleName = claims.get("role", String.class);
-            ArrayList<String> permissions = claims.get("permissions", ArrayList.class);
-            authorities = permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+        } else {
             username = claims.getSubject();
             password = claims.get("password", String.class);
 
+            String roleName = claims.get("role", String.class);
+
+            authorities = List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
         }
+
         return new User(username, password, authorities);
     }
 
-    public List<SimpleGrantedAuthority> getPermisions(Role role) {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
-        return authorities;
+    public List<GrantedAuthority> getPermissions(Role role) {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     public TokenDto generateAccessToken(String username, Map<String, Object> claims) {

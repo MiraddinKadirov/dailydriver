@@ -5,6 +5,7 @@ import org.example.dailydriver.model.entity.Car;
 import org.example.dailydriver.model.entity.CarBooking;
 import org.example.dailydriver.repository.CarBookingRepository;
 import org.example.dailydriver.repository.CarRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,14 +23,18 @@ public class CarBookingService {
         this.bookingRepository = bookingRepository;
     }
 
-
-    public CarBooking bookCar(CarBookingDto dto) {
+    @Async
+    public void bookCar(CarBookingDto dto) {
         Car car = carRepository.findById(dto.getCarId())
                 .orElseThrow(() -> new RuntimeException("Car not found"));
+
         List<CarBooking> activeBookings = bookingRepository.findActiveBookingsByCarId(dto.getCarId());
         if (!activeBookings.isEmpty()) {
             throw new IllegalStateException("Car is already booked during this period");
         }
+
+        car.setIsAvailable(true);
+        carRepository.save(car);
 
         CarBooking booking = new CarBooking();
         booking.setCar(car);
@@ -37,18 +42,24 @@ public class CarBookingService {
         booking.setEndTime(dto.getEndTime());
         booking.setActive(true);
 
-        return bookingRepository.save(booking);
+         bookingRepository.save(booking);
     }
 
 
+    @Async
     public void releaseExpiredBookings() {
-        List<CarBooking> all = bookingRepository.findAll();
+
         LocalDateTime now = LocalDateTime.now();
-        for (CarBooking booking : all) {
-            if (booking.getEndTime().isBefore(now) && booking.isActive()) {
-                booking.setActive(false);
-                bookingRepository.save(booking);
-            }
+        List<CarBooking> expiredBookings = bookingRepository.findAll().stream()
+                .filter(booking -> booking.getEndTime().isBefore(now) && booking.isActive())
+                .toList();
+        for (CarBooking booking : expiredBookings) {
+            booking.setActive(true);
+            bookingRepository.save(booking);
+            Car car = booking.getCar();
+            car.setIsAvailable(false);
+            carRepository.save(car);
         }
     }
+
 }

@@ -8,6 +8,7 @@ import org.example.dailydriver.model.entity.CarRating;
 import org.example.dailydriver.repository.AuthUserRepository;
 import org.example.dailydriver.repository.CarRatingRepository;
 import org.example.dailydriver.repository.CarRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +16,10 @@ import java.util.List;
 @Service
 public class CarRatingService {
 
-
-        private final CarRepository carRepository;
-        private final AuthUserRepository authUserRepository;
-        private final CarRatingRepository carRatingRepository;
-        private final CarRatingMapper carRatingMapper;
+    private final CarRepository carRepository;
+    private final AuthUserRepository authUserRepository;
+    private final CarRatingRepository carRatingRepository;
+    private final CarRatingMapper carRatingMapper;
 
     public CarRatingService(CarRepository carRepository, AuthUserRepository authUserRepository, CarRatingRepository carRatingRepository, CarRatingMapper carRatingMapper) {
         this.carRepository = carRepository;
@@ -29,35 +29,38 @@ public class CarRatingService {
     }
 
 
-        public void rateCar(CarRatingDto dto) {
-            Car car = carRepository.findByIdAndNotDeleted(dto.getCarId())
-                    .orElseThrow(() -> new RuntimeException("Car not found: "));
-            AuthUser user = authUserRepository.findByIdAndNotDeleted(dto.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found: " ));
+    public void rateCar(CarRatingDto dto) {
+        Car car = carRepository.findByIdAndNotDeleted(dto.getCarId())
+                .orElseThrow(() -> new RuntimeException("Car not found"));
+        AuthUser user = authUserRepository.findByIdAndNotDeleted(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-            boolean alreadyRated = carRatingRepository.findByCar(car).stream()
-                    .anyMatch(r -> r.getUser().getId().equals(user.getId()));
-            if (alreadyRated) {
-                throw new RuntimeException("User already rated this car");
-            }
-
-            CarRating rating = carRatingMapper.toEntity(dto);
-
-            carRatingRepository.save(rating);
-
-            updateCarAverageRating(car);
+        boolean alreadyRated = carRatingRepository.findByCar_Id(car.getId()).stream()
+                .anyMatch(r -> r.getUser().getId().equals(user.getId()));
+        if (alreadyRated) {
+            throw new RuntimeException("User already rated this car");
         }
 
+        CarRating rating = carRatingMapper.toEntity(dto);
+        rating.setCar(car); // MUHIM!
+        rating.setUser(user); // MUHIM!
 
-        private void updateCarAverageRating(Car car) {
-            List<CarRating> ratings = carRatingRepository.findByCar(car);
-            double average = ratings.stream()
-                    .mapToInt(CarRating::getRating)
-                    .average()
-                    .orElse(0.0);
-            car.setRating(average);
-            carRepository.save(car);
-        }
+        carRatingRepository.save(rating);
+        updateCarAverageRating(car.getId());
+    }
+
+    private void updateCarAverageRating(String carId) {
+        List<CarRating> ratings = carRatingRepository.findByCar_Id(carId);
+        double average = ratings.stream()
+                .mapToInt(CarRating::getRating)
+                .average()
+                .orElse(0.0);
+
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new RuntimeException("Car not found"));
+        car.setRating(average);
+        carRepository.save(car);
+    }
 
 
 }

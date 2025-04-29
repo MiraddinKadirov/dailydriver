@@ -15,7 +15,7 @@ public class CarBookingScheduler {
         this.bookingService = bookingService;
     }
 
-    @Scheduled(timeUnit = TimeUnit.HOURS, fixedDelay = 5000)
+    @Scheduled(cron = "0 * * * * *")
     public void releaseExpiredBookings() {
         bookingService.releaseExpiredBookings();
     }

@@ -15,7 +15,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: off
 
     properties:
@@ -34,16 +34,16 @@ spring:
 
 application:
     jwt:
-      access-token-expire: 10000
-      refresh-token-expire: 100000000
+      access-token-expire: 300000
+      refresh-token-expire: 600000
       secret: bu_secret_kalit_hech_kim_bilmasin_oka_78_hop
 
 
 
 logging:
   level:
-    root: WARN
-    org.hibernate.SQL: WARN
+    root: INFO
+    org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql: WARN
 
 app:

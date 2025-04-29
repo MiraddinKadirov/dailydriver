@@ -127,15 +127,13 @@ public class AuthUserService implements CrudService<AuthUserCreateDto
         if (authUser == null) {
             throw new RuntimeException("User not found with username: " + authRequest.getUsername());
         }
-        UserDetails userDetails = new User(authUser.getUsername(), authUser.getPassword(), jwtService.getPermisions(authUser.getRole()));
+        UserDetails userDetails = new User(authUser.getUsername(), authUser.getPassword(), jwtService.getPermissions(authUser.getRole()));
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Role role = authUser.getRole();
 
-        //token yasash boshlandi
         Map<String, Object> claims = new HashMap<>(Map.of(
-                "userId", authUser.getId(),
-                "role", role,
+                "username", authUser.getUsername(),
+                "role", authUser.getRole().getName(),
                 "password", authUser.getPassword()
         ));
 
